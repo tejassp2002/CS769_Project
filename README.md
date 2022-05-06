@@ -1,4 +1,4 @@
-# CS769_Project
+# CS769 Course Project
 
 This is the repository for our CS769: Optimization in Machine Learning course on _Combinatorial Optimization from Heuristics to Reinforcement Learning_. 
 
