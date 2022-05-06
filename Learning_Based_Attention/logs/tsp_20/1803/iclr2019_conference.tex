@@ -1,0 +1,88 @@
+\documentclass{article} % For LaTeX2e
+\usepackage{iclr2019_conference,times}
+
+% Optional math commands from https://github.com/goodfeli/dlbook_notation.
+\input{math_commands.tex}
+
+\usepackage{hyperref}
+\usepackage{url}
+
+
+% Extra packages
+
+\usepackage{graphicx}
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{import}
+\usepackage{footnote}
+\usepackage{xr}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+\DeclareMathOperator{\Loss}{\mathcal{L}}
+\defcitealias{gurobi}{Gurobi (2018)}
+
+\title{Attention, Learn to Solve Routing Problems!}
+
+\author{Wouter Kool \\
+  University of Amsterdam \\
+  ORTEC \\
+  \texttt{w.w.m.kool@uva.nl} \\
+  \And
+  Herke van Hoof \\
+  University of Amsterdam\\
+  \texttt{h.c.vanhoof@uva.nl} \\
+  \And
+  Max Welling \\
+  University of Amsterdam \\
+  CIFAR \\
+  \texttt{m.welling@uva.nl} \\
+}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\iclrfinalcopy
+
+\begin{document}
+
+\maketitle
+
+\input{./tex/abstract}
+
+\input{./tex/introduction}
+\input{./tex/related_work}
+\input{./tex/attention_model}
+\input{./tex/reinforce_baseline}
+\input{./tex/experiments}
+\input{./tex/discussion}
+\input{./tex/acknowledgements}
+
+\bibliography{references}
+\bibliographystyle{iclr2019_conference}
+
+
+\clearpage
+\appendix
+
+\input{./tex/appendix/attention_model_details}
+\clearpage
+\input{./tex/appendix/travelling_salesman_problem}
+\clearpage
+\input{./tex/appendix/vehicle_routing_problem}
+\clearpage
+\input{./tex/appendix/orienteering_problem}
+% \clearpage
+\input{./tex/appendix/prize_collecting_tsp}
+
+\input{./tex/appendix/stochastic_pctsp}
+
+
+\end{document}

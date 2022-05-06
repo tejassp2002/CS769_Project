@@ -1,0 +1,34 @@
+
+\section{Stochastic PCTSP (SPCTSP)}
+For the SPCTSP, we assume that the real prize collected $\hat{\rho}^*_i$ at each node only becomes known when visiting the node, and $\hat{\rho}_i = \mathbb{E}\left[\hat{\rho}^*_i\right]$ is the expected prize. We assume the real prizes follow a uniform distribution, so $\hat{\rho}^*_i \sim \text{Uniform}(0, 2 \hat{\rho}_i)$.
+
+\subsection{Attention Model for the SPCTSP}
+In order to apply the Attention Model to the Stochastic PCTSP, the only change we need is that we use the real $\hat{\rho}^*_i$ to update the remaining prize to collect $P_t$ in \eqref{eq:pctsp_remaining_minimum_prize_constraint}:
+\begin{equation}
+\label{eq:stoch_pctsp_remaining_minimum_prize_constraint}
+    P_{t+1} = \max(0, P_{t} - \hat{\rho}^*_{\pi_t}).
+\end{equation}
+We could theoretically use the model trained for PCTSP without retraining, but we choose to retrain. This way the model could (for example) learn that \emph{if} it needs to gather a remaining (normalized) prize of $0.1$, it might prefer to visit a node with expected prize $0.2$ over a node with expected prize $0.1$ as the first real prize will be $\ge 0.1$ with probability $75 \%$ (uniform prizes) whereas the latter only with $50\%$ and thus has a probability of $50\%$ to not satisfy the constraint.
+
+\subsection{Rollout baseline in the stochastic setting}
+Instead of sampling the real prizes online, we already sample them when creating the dataset but keep them hidden to the algorithm. This way, when using a rollout baseline, both the greedy rollout baseline as well as the sample (rollout) from the model use the same real prizes, such that any difference between the two is not a result of stochasticity. This can be seen as a variant of using Common Random Numbers for variance reduction \citep{glasserman1992some}.
+
+\subsection{Details of baselines}
+For the SPCTSP, it is not possible to formulate an exact model that constructs a tour offline (as any tour can be infeasible with nonzero probability) and an algorithm that computes the optimal decision online should take into account an infinite number of scenarios. As a baseline we implement a strategy that:
+\begin{enumerate}
+    \item Plans a tour using the expected prizes $\hat{\rho}_i$
+    \item Executes part of the tour (not returning to the depot), observing the real prizes $\hat{\rho}^*_i$
+    \item Computes the remaining total prize that needs to be collected
+    \item Computes a new tour (again using expected prizes $\hat{\rho}_i$), starting from the last node that was visited, through nodes that have not yet been visited and ending at the depot
+    \item Repeats the steps (2) - (4) above until the minimum total prize has been collected or all nodes have been visited
+    \item Returns to the depot
+\end{enumerate}
+
+Planning of the tours using deterministic prizes means we need to solve a (deterministic) PCTSP, for which we use the ILS C++ algorithm as this was the strongest algorithm for PCTSP (for large $n$). Note that in (4), we have a variant of the PCTSP where we do not have a single depot, but rather separate start and end points, whereas the ILS C++ implementation assumes starting and ending at a single depot. However, as the ILS C++ implementation uses a distance matrix, we can effectively plan with a start and end node by defining the distance from the `depot' to node $j$ as the distance from the start node (the last visited node) to node $j$, whereas we leave the distance from node $j$ to the depot/end node unchanged (so the distance matrix becomes asymmetrical). Additionally, we remove all nodes (rows/columns in the distance matrix) that have already been visited from the problem.
+
+We consider three variants that differ in the number of nodes that are visited before replanning the tour, for a tradeoff between adaptivity and run time:
+\begin{enumerate}
+    \item \emph{All} nodes in the planned tour are visited (except the final return to the depot). We only need to replan and visit additional nodes if the constraint is not satisfied, otherwise we return to the depot.
+    \item \emph{Half} of the nodes \emph{in the planned tour} are visited, where we visit $k$ nodes if there are $2k + 1$ nodes (excluding the return to the depot), so we round down if an odd number of visits is planned. This way, we will have $O(\log n)$ replanning iterations, while being more adaptive when we are closer to satisfying the total prize constraint. This is a trade-off of adaptivity vs computation time.
+    \item Only the \emph{first} node is visited, after which we directly replan. This allows the algorithm to take new online information about the real prizes into account directly, but is very expensive to compute as it requires $O(n)$ iterations.
+\end{enumerate}

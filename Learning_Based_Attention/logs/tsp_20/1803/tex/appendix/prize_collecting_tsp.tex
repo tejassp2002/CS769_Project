@@ -1,0 +1,64 @@
+\section{Prize Collecting TSP}
+\label{sec:appendix_pctsp}
+In the Prize Collecting TSP (PCTSP) each node has a prize $\rho_i$ and an associated penalty $\beta_i$. The goal is to minimize the total length of the tour plus the sum of penalties for nodes which are not visited, while collecting at least a given minimum total prize. W.l.o.g. we assume the minimum total prize is equal to 1 (as prizes can be normalized). This problem is related to the OP but inverts the goal (minimizing tour length given a minimum total prize to collect instead of maximizing total prize given a maximum tour length) and additionally adds penalties. Again, we add a special depot node with index 0 and coordinates $\mathbf{x}_0$ and if the model selects the depot, the route is finished. In the PCTSP, it can be beneficial to visit additional nodes, even if the minimum total prize constraint is already satisfied, in order to avoid penalties.
+
+\subsection{Instance generation}
+The depot location as well as $n$ node locations are sampled uniformly at random in the unit square. Similar to the OP, we select the distribution for the prizes and penalties with the idea that for difficult instances approximately half of the nodes should be visited. Additionally, neither the prize nor the penalty should dominate the node selection process.
+
+\paragraph{Prizes}
+We consider uniformly distributed prizes. If we sample prizes $\rho_i \sim \text{Uniform}(0, 1)$, then $\mathbb{E}(\rho_i) = \frac{1}{2}$, and the expected total prize of any subset of $\frac{n}{2}$ nodes (i.e. half of the nodes) would be $\frac{n}{4}$. Therefore, if $S$ is the set of nodes that is visited, we require that $\sum_{i \in S} \rho_i \ge \frac{n}{4}$, or equivalently $\sum_{i \in S} \hat{\rho}_i \ge 1$ where $\hat{\rho}_i = \rho_i \cdot \frac{4}{n}$ is the normalized prize. Note that it can be the case that $\sum_{i=1}^n \hat{\rho}_i < 1$, in which case the prize constraint may be violated but it is only allowed to return to the depot after all nodes have been visited.
+
+\paragraph{Penalties}
+If penalties are too small, then node selection is determined almost entirely by the minimum total prize constraint. If penalties are too large, we will always visit all nodes, making the minimum total prize constraint obsolete. We argue that in order for the penalties to be meaningful, they should contribute a term in the objective approximately equal to the total length of the tour. If $L^n$ is the expected TSP tour length with $n$ nodes, we try to achieve this by sampling $\beta_i \sim \text{Uniform}(0, 2 \cdot \frac{L^n}{n})$ such that $\mathbb{E}(\beta_i) = \frac{L^n}{n}$ and the expected total penalty for a subset of $\frac{n}{2}$ nodes is $\frac{L^n}{2}$. Following the numbers we use for the OP, we roughly define $\frac{L^n}{2} \approx K^n = 2, 3, 4$ for $n= 20, 50, 100$\footnote{The average length of the optimal TSP tour is 3.84, 5.70 and 7.76 for $n=20, 50, 100$.}. This means that we should sample $\beta_i \sim \text{Uniform}(0, 4 \cdot \frac{K^n}{n})$, but empirically we find that $\hat{\beta}_i \sim \text{Uniform}(0, 3 \cdot \frac{K^n}{n})$ works better, which means that the prizes and penalties are balanced as the minimum total prize constraint is sometimes binding and sometimes not.
+
+\subsection{Attention Model for the PCTSP}
+
+\paragraph{Encoder}
+Again, we use separate parameters for the depot node embedding. Additionally, we provide the node prize $\hat{\rho}_i$ and the penalty $\hat{\beta}_i$ as input features:
+\begin{equation}
+\mathbf{h}_i^{(0)} = \begin{cases}
+		W_0^{\text{x}} \mathbf{x}_i + \mathbf{b}_0^{\text{x}} & i = 0 \\
+        W^{\text{x}} \left[\mathbf{x}_i, \hat{\rho}_i, \hat{\beta}_i\right] + \mathbf{b}^{\text{x}} & i = 1, \ldots, n.
+\end{cases} \\
+\end{equation}
+
+\paragraph{Minimum prize constraint}
+In order to satisfy the minimum total prize constraint, we keep track of the \emph{remaining} total prize $P_t$ to collect at time $t$. At $t = 1$, $P_1 = 1$ (as we normalized prizes). Then for $t > 0$, $P$ is updated as
+\begin{equation}
+\label{eq:pctsp_remaining_minimum_prize_constraint}
+    P_{t+1} = \max(0, P_{t} - \hat{\rho}_{\pi_t}).
+\end{equation}
+If the constraint is satisfied after visiting $\pi_t$ is visited at time $t$, then $P_{t+1}$ will be 0.
+
+\paragraph{Decoder context}
+The context for the decoder for the PCTSP at time $t$ is the current/last location $\pi_{t-1}$ and the remaining prize to collect $P_t$. Again, we do not need placeholders if $t=1$ as the route starts at the depot and we do not need to provide information about the first node as the route should end at the depot. The information about the prizes collected is implicitly provided to the model in the form of $P_t$ and we do not need to provide any information about the penalties as this is irrelevant for the remaining decisions:
+\begin{equation}
+	\mathbf{h}_{(c)}^{(N)} = \begin{cases}
+		\left[\bar{\mathbf{h}}^{(N)} , \mathbf{h}^{(N)}_{\pi_{t-1}} , P_t  \right] & t > 1 \\
+        \left[\bar{\mathbf{h}}^{(N)} , \mathbf{h}^{(N)}_0 , P_t \right] & t = 1.
+\end{cases} \\
+\end{equation}
+
+\paragraph{Masking}
+In the PCTSP, the depot node cannot be visited if the remaining prize to collect $P_t$ is larger than 0 and not yet all nodes have been visited (so $t \le n$): 
+\begin{equation}
+    u_{(c)0} = - \infty \Leftrightarrow P_t > 0 \text{ and } t \le n.
+\end{equation}
+Regular nodes are masked (i.e. cannot be visited) only if they are already visited:
+\begin{equation}
+    u_{(c)j} = - \infty \Leftrightarrow \exists t' < t: \pi_{t'} = j.
+\end{equation}
+
+\subsection{Details of baselines}
+
+For the C++ Iterated Local Search (ILS) algorithm\footnote{\url{https://github.com/jordanamecler/PCTSP}}, we perform 1 run as this takes already 2 minutes per instance (single thread) on average. For the Python ILS algorithm\footnote{\url{https://github.com/rafael2reis/salesman}} we perform 10 runs as this algorithm is fast. This improved results somewhat for $n = 20$.
+
+\paragraph{OR Tools}
+For the Google OR Tools implementation, we modify the formulation for the CVRP\footnote{\url{https://github.com/google/or-tools/blob/master/examples/python/cvrp.py}}:
+\begin{itemize}
+    \item We replace the Manhattan distance by the Euclidian distance.
+    \item We set the number of vehicles to 1.
+    \item For each individual node $i$, we add a \emph{Disjunction constraint} with $\{i\}$ as the set of nodes, and a penalty equal to the penalty $\hat{\beta}_i$. This allows OR tools to skip node $i$ at a cost $\hat{\beta}_i$.
+    \item We replace the capacity constraint by a minimum total prize constraint by adding the prizes as a \emph{Dimension}.
+\end{itemize}
+We multiply all float inputs by $10^7$ and round to integers. Note that we keep the total length objective from the CVRP and add the Disjunction constraint with penalties to obtain the right objective.

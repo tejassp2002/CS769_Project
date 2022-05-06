@@ -1,0 +1,100 @@
+\begin{table}[ht!]
+\vskip -6mm
+\caption{Attention Model (AM) vs baselines. The gap \% is w.r.t. the best value across all methods.}
+\label{tab:results_problems}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{0.35em}
+\renewcommand{\arraystretch}{0.8}
+\begin{tabular}{ll|rrr|rrr|rrr}
+ & &  \multicolumn{3}{c|}{$n = 20$} & \multicolumn{3}{c|}{$n = 50$} & \multicolumn{3}{c}{$n = 100$} \\
+ & Method &  \multicolumn{1}{c}{Obj.} & \multicolumn{1}{c}{Gap} & \multicolumn{1}{c|}{Time} & \multicolumn{1}{c}{Obj.} & \multicolumn{1}{c}{Gap} & \multicolumn{1}{c|}{Time} & \multicolumn{1}{c}{Obj.} & \multicolumn{1}{c}{Gap} & \multicolumn{1}{c}{Time} \\
+\midrule
+\midrule
+\multirow{21}{*}{\rotatebox[origin=c]{90}{TSP}}
+ &  Concorde  &  $3.84$ & $0.00 \%$ & (1m) & $5.70$ & $0.00 \%$ & (2m) & $7.76$ & $0.00 \%$ & (3m) \\
+ &  LKH3  &  $3.84$ & $0.00 \%$ & (18s) & $5.70$ & $0.00 \%$ & (5m) & $7.76$ & $0.00 \%$ & (21m) \\
+ &  Gurobi  &  $3.84$ & $0.00 \%$ & (7s) & $5.70$ & $0.00 \%$ & (2m) & $7.76$ & $0.00 \%$ & (17m) \\
+ &  Gurobi (1s)  &  $3.84$ & $0.00 \%$ & (8s) & $5.70$ & $0.00 \%$ & (2m) & \multicolumn{3}{c}{-} \\
+\cmidrule{2-11}
+ &  Nearest Insertion  &  $4.33$ & $12.91 \%$ & (1s) & $6.78$ & $19.03 \%$ & (2s) & $9.46$ & $21.82 \%$ & (6s) \\
+ &  Random Insertion  &  $4.00$ & $4.36 \%$ & (0s) & $6.13$ & $7.65 \%$ & (1s) & $8.52$ & $9.69 \%$ & (3s) \\
+ &  Farthest Insertion  &  $3.93$ & $2.36 \%$ & (1s) & $6.01$ & $5.53 \%$ & (2s) & $8.35$ & $7.59 \%$ & (7s) \\
+ &  Nearest Neighbor  &  $4.50$ & $17.23 \%$ & (0s) & $7.00$ & $22.94 \%$ & (0s) & $9.68$ & $24.73 \%$ & (0s) \\
+ &  \citeauthor{vinyals2015pointer} (gr.)  &  $3.88$ & $1.15 \%$ &  & $7.66$ & $34.48 \%$ &  & \multicolumn{3}{c}{-} \\
+ &  \citeauthor{bello2016neural} (gr.)  &  $3.89$ & $1.42 \%$ &  & $5.95$ & $4.46 \%$ &  & $8.30$ & $6.90 \%$ &  \\
+ &  \citeauthor{dai2017learning}  &  $3.89$ & $1.42 \%$ &  & $5.99$ & $5.16 \%$ &  & $8.31$ & $7.03 \%$ &  \\
+ &  \citeauthor{nowak2017note}  &  $3.93$ & $2.46 \%$ &  & \multicolumn{3}{c|}{-} & \multicolumn{3}{c}{-} \\
+ &  EAN (greedy)  &  $3.86$ & $0.66 \%$ & (2m) & $5.92$ & $3.98 \%$ & (5m) & $8.42$ & $8.41 \%$ & (8m) \\
+ &  AM (greedy)  &  $\mathbf{3.85}$ & $\mathbf{0.34 \%}$ & (0s) & $\mathbf{5.80}$ & $\mathbf{1.76 \%}$ & (2s) & $\mathbf{8.12}$ & $\mathbf{4.53 \%}$ & (6s) \\
+\cmidrule{2-11}
+ &  OR Tools  &  $3.85$ & $0.37 \%$ &  & $5.80$ & $1.83 \%$ &  & $7.99$ & $2.90 \%$ &  \\
+ &  Chr.f. + 2OPT  &  $3.85$ & $0.37 \%$ &  & $5.79$ & $1.65 \%$ &  & \multicolumn{3}{c}{-} \\
+ &  \citeauthor{bello2016neural} (s.)  &  \multicolumn{3}{c|}{-} & $5.75$ & $0.95 \%$ &  & $8.00$ & $3.03 \%$ &  \\
+ &  EAN (gr. + 2OPT)  &  $3.85$ & $0.42 \%$ & (4m) & $5.85$ & $2.77 \%$ & (26m) & $8.17$ & $5.21 \%$ & (3h) \\
+ &  EAN (sampling)  &  $3.84$ & $0.11 \%$ & (5m) & $5.77$ & $1.28 \%$ & (17m) & $8.75$ & $12.70 \%$ & (56m) \\
+ &  EAN (s. + 2OPT)  &  $3.84$ & $0.09 \%$ & (6m) & $5.75$ & $1.00 \%$ & (32m) & $8.12$ & $4.64 \%$ & (5h) \\
+ &  AM (sampling)  &  $\mathbf{3.84}$ & $\mathbf{0.08 \%}$ & (5m) & $\mathbf{5.73}$ & $\mathbf{0.52 \%}$ & (24m) & $\mathbf{7.94}$ & $\mathbf{2.26 \%}$ & (1h) \\
+\midrule
+\midrule
+\multirow{9}{*}{\rotatebox[origin=c]{90}{CVRP}}
+ &  Gurobi  &  $6.10$ & $0.00 \%$ &  & \multicolumn{3}{c|}{-} & \multicolumn{3}{c}{-} \\
+ &  LKH3  &  $6.14$ & $0.58 \%$ & (2h) & $10.38$ & $0.00 \%$ & (7h) & $15.65$ & $0.00 \%$ & (13h) \\
+\cmidrule{2-11}
+ &  RL (greedy)  &  $6.59$ & $8.03 \%$ &  & $11.39$ & $9.78 \%$ &  & $17.23$ & $10.12 \%$ &  \\
+ &  AM (greedy)  &  $\mathbf{6.40}$ & $\mathbf{4.97 \%}$ & (1s) & $\mathbf{10.98}$ & $\mathbf{5.86 \%}$ & (3s) & $\mathbf{16.80}$ & $\mathbf{7.34 \%}$ & (8s) \\
+\cmidrule{2-11}
+ &  RL (beam 10)  &  $6.40$ & $4.92 \%$ &  & $11.15$ & $7.46 \%$ &  & $16.96$ & $8.39 \%$ &  \\
+ &  Random CW  &  $6.81$ & $11.64 \%$ &  & $12.25$ & $18.07 \%$ &  & $18.96$ & $21.18 \%$ &  \\
+ &  Random Sweep  &  $7.08$ & $16.07 \%$ &  & $12.96$ & $24.91 \%$ &  & $20.33$ & $29.93 \%$ &  \\
+ &  OR Tools  &  $6.43$ & $5.41 \%$ &  & $11.31$ & $9.01 \%$ &  & $17.16$ & $9.67 \%$ &  \\
+ &  AM (sampling)  &  $\mathbf{6.25}$ & $\mathbf{2.49 \%}$ & (6m) & $\mathbf{10.62}$ & $\mathbf{2.40 \%}$ & (28m) & $\mathbf{16.23}$ & $\mathbf{3.72 \%}$ & (2h) \\
+\midrule
+\midrule
+\multirow{4}{*}{\rotatebox[origin=c]{90}{SDVRP}}
+ &  RL (greedy)  &  $6.51$ & $4.19 \%$ &  & $11.32$ & $6.88 \%$ &  & $17.12$ & $5.23 \%$ &  \\
+ &  AM (greedy)  &  $\mathbf{6.39}$ & $\mathbf{2.34 \%}$ & (1s) & $\mathbf{10.92}$ & $\mathbf{3.08 \%}$ & (4s) & $\mathbf{16.83}$ & $\mathbf{3.42 \%}$ & (11s) \\
+\cmidrule{2-11}
+ &  RL (beam 10)  &  $6.34$ & $1.47 \%$ &  & $11.08$ & $4.61 \%$ &  & $16.86$ & $3.63 \%$ &  \\
+ &  AM (sampling)  &  $\mathbf{6.25}$ & $\mathbf{0.00 \%}$ & (9m) & $\mathbf{10.59}$ & $\mathbf{0.00 \%}$ & (42m) & $\mathbf{16.27}$ & $\mathbf{0.00 \%}$ & (3h) \\
+\midrule
+\midrule
+\multirow{11}{*}{\rotatebox[origin=c]{90}{OP (distance)}}
+ &  Gurobi  &  $5.39$ & $0.00 \%$ & (16m) & \multicolumn{3}{c|}{-} & \multicolumn{3}{c}{-} \\
+ &  Gurobi (1s)  &  $4.62$ & $14.22 \%$ & (4m) & $1.29$ & $92.03 \%$ & (6m) & $0.58$ & $98.25 \%$ & (7m) \\
+ &  Gurobi (10s)  &  $5.37$ & $0.33 \%$ & (12m) & $10.96$ & $32.20 \%$ & (51m) & $1.34$ & $95.97 \%$ & (53m) \\
+ &  Gurobi (30s)  &  $5.38$ & $0.05 \%$ & (14m) & $13.57$ & $16.09 \%$ & (2h) & $3.23$ & $90.28 \%$ & (3h) \\
+ &  Compass  &  $5.37$ & $0.36 \%$ & (2m) & $16.17$ & $0.00 \%$ & (5m) & $33.19$ & $0.00 \%$ & (15m) \\
+\cmidrule{2-11}
+ &  Tsili (greedy)  &  $4.08$ & $24.25 \%$ & (4s) & $12.46$ & $22.94 \%$ & (4s) & $25.69$ & $22.59 \%$ & (5s) \\
+ &  AM (greedy)  &  $\mathbf{5.19}$ & $\mathbf{3.64 \%}$ & (0s) & $\mathbf{15.64}$ & $\mathbf{3.23 \%}$ & (1s) & $\mathbf{31.62}$ & $\mathbf{4.75 \%}$ & (5s) \\
+\cmidrule{2-11}
+ &  GA (Python)  &  $5.12$ & $4.88 \%$ & (10m) & $10.90$ & $32.59 \%$ & (1h) & $14.91$ & $55.08 \%$ & (5h) \\
+ &  OR Tools (10s)  &  $4.09$ & $24.05 \%$ & (52m) & \multicolumn{3}{c|}{-} & \multicolumn{3}{c}{-} \\
+ &  Tsili (sampling)  &  $5.30$ & $1.62 \%$ & (28s) & $15.50$ & $4.14 \%$ & (2m) & $30.52$ & $8.05 \%$ & (6m) \\
+ &  AM (sampling)  &  $\mathbf{5.30}$ & $\mathbf{1.56 \%}$ & (4m) & $\mathbf{16.07}$ & $\mathbf{0.60 \%}$ & (16m) & $\mathbf{32.68}$ & $\mathbf{1.55 \%}$ & (53m) \\
+\midrule
+\midrule
+\multirow{10}{*}{\rotatebox[origin=c]{90}{PCTSP}}
+ &  Gurobi  &  $3.13$ & $0.00 \%$ & (2m) & \multicolumn{3}{c|}{-} & \multicolumn{3}{c}{-} \\
+ &  Gurobi (1s)  &  $3.14$ & $0.07 \%$ & (1m) & \multicolumn{3}{c|}{-} & \multicolumn{3}{c}{-} \\
+ &  Gurobi (10s)  &  $3.13$ & $0.00 \%$ & (2m) & $4.54$ & $1.36 \%$ & (32m) & \multicolumn{3}{c}{-} \\
+ &  Gurobi (30s)  &  $3.13$ & $0.00 \%$ & (2m) & $4.48$ & $0.03 \%$ & (54m) & \multicolumn{3}{c}{-} \\
+\cmidrule{2-11}
+ &  AM (greedy)  &  $\mathbf{3.18}$ & $\mathbf{1.62 \%}$ & (0s) & $\mathbf{4.60}$ & $\mathbf{2.66 \%}$ & (2s) & $\mathbf{6.25}$ & $\mathbf{4.46 \%}$ & (5s) \\
+\cmidrule{2-11}
+ &  ILS (C++)  &  $3.16$ & $0.77 \%$ & (16m) & $4.50$ & $0.36 \%$ & (2h) & $\mathbf{5.98}$ & $\mathbf{0.00 \%}$ & (12h) \\
+ &  OR Tools (10s)  &  $3.14$ & $0.05 \%$ & (52m) & $4.51$ & $0.70 \%$ & (52m) & $6.35$ & $6.21 \%$ & (52m) \\
+ &  OR Tools (60s)  &  $\mathbf{3.13}$ & $\mathbf{0.01 \%}$ & (5h) & $\mathbf{4.48}$ & $\mathbf{0.00 \%}$ & (5h) & $6.07$ & $1.56 \%$ & (5h) \\
+ &  ILS (Python 10x)  &  $5.21$ & $66.19 \%$ & (4m) & $12.51$ & $179.05 \%$ & (3m) & $23.98$ & $300.95 \%$ & (3m) \\
+ &  AM (sampling)  &  $3.15$ & $0.45 \%$ & (5m) & $4.52$ & $0.74 \%$ & (19m) & $6.08$ & $1.67 \%$ & (1h) \\
+\midrule
+\midrule
+\multirow{4}{*}{\rotatebox[origin=c]{90}{SPCTSP}}
+ &  REOPT (all)  &  $3.34$ & $2.38 \%$ & (17m) & $4.68$ & $1.04 \%$ & (2h) & $6.22$ & $1.10 \%$ & (12h) \\
+ &  REOPT (half)  &  $3.31$ & $1.38 \%$ & (25m) & $\mathbf{4.64}$ & $\mathbf{0.00 \%}$ & (3h) & $\mathbf{6.16}$ & $\mathbf{0.00 \%}$ & (16h) \\
+ &  REOPT (first)  &  $3.31$ & $1.60 \%$ & (1h) & $4.66$ & $0.44 \%$ & (22h) & \multicolumn{3}{c}{-} \\
+ &  AM (greedy)  &  $\mathbf{3.26}$ & $\mathbf{0.00 \%}$ & (0s) & $4.65$ & $0.33 \%$ & (2s) & $6.32$ & $2.69 \%$ & (5s) \\
+\end{tabular}
+\vskip -10mm
+\end{table}

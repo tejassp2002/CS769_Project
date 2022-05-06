@@ -1,0 +1,257 @@
+\begin{thebibliography}{39}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Applegate et~al.(2006)Applegate, Bixby, Chvatal, and Cook]{concorde}
+David Applegate, Robert Bixby, Vasek Chvatal, and William Cook.
+\newblock Concorde {TSP} solver, 2006.
+\newblock URL \url{http://www.math.uwaterloo.ca/tsp/concorde/m}.
+
+\bibitem[Ba et~al.(2016)Ba, Kiros, and Hinton]{ba2016layer}
+Jimmy~Lei Ba, Jamie~Ryan Kiros, and Geoffrey~E Hinton.
+\newblock Layer normalization.
+\newblock \emph{arXiv preprint arXiv:1607.06450}, 2016.
+
+\bibitem[Bal et~al.(2016)Bal, Epema, de~Laat, van Nieuwpoort, Romein, Seinstra,
+  Snoek, and Wijshoff]{bal2016medium}
+Henri Bal, Dick Epema, Cees de~Laat, Rob van Nieuwpoort, John Romein, Frank
+  Seinstra, Cees Snoek, and Harry Wijshoff.
+\newblock A medium-scale distributed system for computer science research:
+  Infrastructure for the long term.
+\newblock \emph{Computer}, \penalty0 (5):\penalty0 54--63, 2016.
+
+\bibitem[Balas(1989)]{balas1989prize}
+Egon Balas.
+\newblock The prize collecting traveling salesman problem.
+\newblock \emph{Networks}, 19\penalty0 (6):\penalty0 621--636, 1989.
+
+\bibitem[Bello et~al.(2016)Bello, Pham, Le, Norouzi, and
+  Bengio]{bello2016neural}
+Irwan Bello, Hieu Pham, Quoc~V Le, Mohammad Norouzi, and Samy Bengio.
+\newblock Neural combinatorial optimization with reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:1611.09940}, 2016.
+
+\bibitem[Dai et~al.(2017)Dai, Khalil, Zhang, Dilkina, and
+  Song]{dai2017learning}
+Hanjun Dai, Elias~B Khalil, Yuyu Zhang, Bistra Dilkina, and Le~Song.
+\newblock Learning combinatorial optimization algorithms over graphs.
+\newblock In \emph{Advances in Neural Information Processing Systems 30}, pp.\
+  6348--6358, 2017.
+
+\bibitem[Deudon et~al.(2018)Deudon, Cournut, Lacoste, Adulyasak, and
+  Rousseau]{deudon2018learning}
+Michel Deudon, Pierre Cournut, Alexandre Lacoste, Yossiri Adulyasak, and
+  Louis-Martin Rousseau.
+\newblock Learning heuristics for the {TSP} by policy gradient.
+\newblock In \emph{International Conference on the Integration of Constraint
+  Programming, Artificial Intelligence, and Operations Research}, pp.\
+  170--181. Springer, 2018.
+
+\bibitem[Ene et~al.(2018)Ene, Nagarajan, and Saket]{ene2018approximation}
+Alina Ene, Viswanath Nagarajan, and Rishi Saket.
+\newblock Approximation algorithms for stochastic k-{TSP}.
+\newblock In \emph{37th IARCS Annual Conference on Foundations of Software
+  Technology and Theoretical Computer Science}, 2018.
+
+\bibitem[Fischetti et~al.(1998)Fischetti, Gonzalez, and
+  Toth]{fischetti1998solving}
+Matteo Fischetti, Juan Jose~Salazar Gonzalez, and Paolo Toth.
+\newblock Solving the orienteering problem through branch-and-cut.
+\newblock \emph{INFORMS Journal on Computing}, 10\penalty0 (2):\penalty0
+  133--148, 1998.
+
+\bibitem[Garey \& Johnson(1979)Garey and Johnson]{garey1979computers}
+Michael~R Garey and David~S Johnson.
+\newblock Computers and intractability: A guide to the theory of
+  np-completeness (series of books in the mathematical sciences), ed.
+\newblock \emph{Computers and Intractability}, pp.\  340, 1979.
+
+\bibitem[Glasserman \& Yao(1992)Glasserman and Yao]{glasserman1992some}
+Paul Glasserman and David~D Yao.
+\newblock Some guidelines and guarantees for common random numbers.
+\newblock \emph{Management Science}, 38\penalty0 (6):\penalty0 884--908, 1992.
+
+\bibitem[Golden et~al.(1987)Golden, Levy, and Vohra]{golden1987orienteering}
+Bruce~L Golden, Larry Levy, and Rakesh Vohra.
+\newblock The orienteering problem.
+\newblock \emph{Naval Research Logistics (NRL)}, 34\penalty0 (3):\penalty0
+  307--318, 1987.
+
+\bibitem[{Gurobi Optimization, LLC}(2018)]{gurobi}
+{Gurobi Optimization, LLC}.
+\newblock Gurobi optimizer reference manual, 2018.
+\newblock URL \url{http://www.gurobi.com}.
+
+\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{he2016deep}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock Deep residual learning for image recognition.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pp.\  770--778, 2016.
+
+\bibitem[Helsgaun(2017)]{helsgaun2017extension}
+Keld Helsgaun.
+\newblock An extension of the {Lin-Kernighan-Helsgaun} {TSP} solver for
+  constrained traveling salesman and vehicle routing problems: Technical
+  report.
+\newblock 2017.
+
+\bibitem[Hinton et~al.(2015)Hinton, Vinyals, and Dean]{hinton2015distilling}
+Geoffrey Hinton, Oriol Vinyals, and Jeffrey Dean.
+\newblock Distilling the knowledge in a neural network.
+\newblock In \emph{NIPS Deep Learning and Representation Learning Workshop},
+  2015.
+\newblock URL \url{http://arxiv.org/abs/1503.02531}.
+
+\bibitem[Hopfield \& Tank(1985)Hopfield and Tank]{hopfield1985neural}
+John~J Hopfield and David~W Tank.
+\newblock ``{N}eural'' computation of decisions in optimization problems.
+\newblock \emph{Biological cybernetics}, 52\penalty0 (3):\penalty0 141--152,
+  1985.
+
+\bibitem[Ioffe \& Szegedy(2015)Ioffe and Szegedy]{ioffe2015batch}
+Sergey Ioffe and Christian Szegedy.
+\newblock Batch normalization: Accelerating deep network training by reducing
+  internal covariate shift.
+\newblock In \emph{International Conference on Machine Learning}, pp.\
+  448--456, 2015.
+
+\bibitem[Kaempfer \& Wolf(2018)Kaempfer and Wolf]{kaempfer2018learning}
+Yoav Kaempfer and Lior Wolf.
+\newblock Learning the multiple traveling salesmen problem with permutation
+  invariant pooling networks.
+\newblock \emph{arXiv preprint arXiv:1803.09621}, 2018.
+
+\bibitem[Kingma \& Ba(2015)Kingma and Ba]{kingma2015adam}
+Diederik~P Kingma and Jimmy Ba.
+\newblock Adam: A method for stochastic optimization.
+\newblock In \emph{International Conference on Learning Representations}, 2015.
+
+\bibitem[Kobeaga et~al.(2018)Kobeaga, Merino, and Lozano]{kobeaga2018efficient}
+Gorka Kobeaga, Mar{\'\i}a Merino, and Jose~A Lozano.
+\newblock An efficient evolutionary algorithm for the orienteering problem.
+\newblock \emph{Computers \& Operations Research}, 90:\penalty0 42--59, 2018.
+
+\bibitem[LeCun et~al.(2015)LeCun, Bengio, and Hinton]{lecun2015deep}
+Yann LeCun, Yoshua Bengio, and Geoffrey Hinton.
+\newblock Deep learning.
+\newblock \emph{Nature}, 521\penalty0 (7553):\penalty0 436, 2015.
+
+\bibitem[Mnih et~al.(2015)Mnih, Kavukcuoglu, Silver, Rusu, Veness, Bellemare,
+  Graves, Riedmiller, Fidjeland, Ostrovski, et~al.]{mnih2015human}
+Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei~A Rusu, Joel Veness,
+  Marc~G Bellemare, Alex Graves, Martin Riedmiller, Andreas~K Fidjeland, Georg
+  Ostrovski, et~al.
+\newblock Human-level control through deep reinforcement learning.
+\newblock \emph{Nature}, 518\penalty0 (7540):\penalty0 529, 2015.
+
+\bibitem[Nazari et~al.(2018)Nazari, Oroojlooy, Snyder, and
+  Takac]{nazari2018reinforcement}
+MohammadReza Nazari, Afshin Oroojlooy, Lawrence Snyder, and Martin Takac.
+\newblock Reinforcement learning for solving the vehicle routing problem.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  9860--9870, 2018.
+
+\bibitem[Nowak et~al.(2017)Nowak, Villar, Bandeira, and Bruna]{nowak2017note}
+Alex Nowak, Soledad Villar, Afonso~S Bandeira, and Joan Bruna.
+\newblock A note on learning algorithms for quadratic assignment with graph
+  neural networks.
+\newblock \emph{arXiv preprint arXiv:1706.07450}, 2017.
+
+\bibitem[Paszke et~al.(2017)Paszke, Gross, Chintala, Chanan, Yang, DeVito, Lin,
+  Desmaison, Antiga, and Lerer]{paszke2017automatic}
+Adam Paszke, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary
+  DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer.
+\newblock Automatic differentiation in {PyTorch}.
+\newblock 2017.
+
+\bibitem[Rennie et~al.(2017)Rennie, Marcheret, Mroueh, Ross, and
+  Goel]{rennie2017self}
+Steven~J Rennie, Etienne Marcheret, Youssef Mroueh, Jerret Ross, and Vaibhava
+  Goel.
+\newblock Self-critical sequence training for image captioning.
+\newblock In \emph{Proceedings of the IEEE Conference on Computer Vision and
+  Pattern Recognition}, pp.\  7008--7024, 2017.
+
+\bibitem[Rosenkrantz et~al.(2009)Rosenkrantz, Stearns, and
+  Lewis]{rosenkrantz2009analysis}
+Daniel~J Rosenkrantz, Richard~E Stearns, and Philip~M Lewis.
+\newblock An analysis of several heuristics for the traveling salesman problem.
+\newblock In \emph{Fundamental Problems in Computing}, pp.\  45--69. Springer,
+  2009.
+
+\bibitem[Silver et~al.(2017)Silver, Schrittwieser, Simonyan, Antonoglou, Huang,
+  Guez, Hubert, Baker, Lai, Bolton, et~al.]{silver2017mastering}
+David Silver, Julian Schrittwieser, Karen Simonyan, Ioannis Antonoglou, Aja
+  Huang, Arthur Guez, Thomas Hubert, Lucas Baker, Matthew Lai, Adrian Bolton,
+  et~al.
+\newblock Mastering the game of go without human knowledge.
+\newblock \emph{Nature}, 550\penalty0 (7676):\penalty0 354, 2017.
+
+\bibitem[Smith(1999)]{smith1999neural}
+Kate~A Smith.
+\newblock Neural networks for combinatorial optimization: a review of more than
+  a decade of research.
+\newblock \emph{INFORMS Journal on Computing}, 11\penalty0 (1):\penalty0
+  15--34, 1999.
+
+\bibitem[Toth \& Vigo(2014)Toth and Vigo]{toth2014vehicle}
+Paolo Toth and Daniele Vigo.
+\newblock \emph{Vehicle routing: problems, methods, and applications}.
+\newblock SIAM, 2014.
+
+\bibitem[Tsiligirides(1984)]{tsiligirides1984heuristic}
+Theodore Tsiligirides.
+\newblock Heuristic methods applied to orienteering.
+\newblock \emph{Journal of the Operational Research Society}, 35\penalty0
+  (9):\penalty0 797--809, 1984.
+
+\bibitem[Vansteenwegen et~al.(2011)Vansteenwegen, Souffriau, and
+  Van~Oudheusden]{vansteenwegen2011orienteering}
+Pieter Vansteenwegen, Wouter Souffriau, and Dirk Van~Oudheusden.
+\newblock The orienteering problem: A survey.
+\newblock \emph{European Journal of Operational Research}, 209\penalty0
+  (1):\penalty0 1--10, 2011.
+
+\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
+  Kaiser, and Polosukhin]{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  5998--6008, 2017.
+
+\bibitem[Velickovic et~al.(2018)Velickovic, Cucurull, Casanova, Romero, Liò,
+  and Bengio]{velickovic2018graph}
+Petar Velickovic, Guillem Cucurull, Arantxa Casanova, Adriana Romero, Pietro
+  Liò, and Yoshua Bengio.
+\newblock Graph attention networks.
+\newblock In \emph{International Conference on Learning Representations}, 2018.
+
+\bibitem[Vinyals et~al.(2015)Vinyals, Fortunato, and
+  Jaitly]{vinyals2015pointer}
+Oriol Vinyals, Meire Fortunato, and Navdeep Jaitly.
+\newblock Pointer networks.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pp.\
+  2692--2700, 2015.
+
+\bibitem[Vinyals et~al.(2016)Vinyals, Bengio, and Kudlur]{vinyals2015order}
+Oriol Vinyals, Samy Bengio, and Manjunath Kudlur.
+\newblock Order matters: Sequence to sequence for sets.
+\newblock In \emph{International Conference on Learning Representations}, 2016.
+
+\bibitem[Williams(1992)]{williams1992simple}
+Ronald~J Williams.
+\newblock Simple statistical gradient-following algorithms for connectionist
+  reinforcement learning.
+\newblock \emph{Machine learning}, 8\penalty0 (3-4):\penalty0 229--256, 1992.
+
+\bibitem[Wolpert \& Macready(1997)Wolpert and Macready]{wolpert1997no}
+David~H Wolpert and William~G Macready.
+\newblock No free lunch theorems for optimization.
+\newblock \emph{IEEE transactions on evolutionary computation}, 1\penalty0
+  (1):\penalty0 67--82, 1997.
+
+\end{thebibliography}

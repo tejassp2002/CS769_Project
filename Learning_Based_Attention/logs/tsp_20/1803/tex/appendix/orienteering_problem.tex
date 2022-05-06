@@ -1,0 +1,122 @@
+\section{Orienteering Problem}
+\label{sec:appendix_orienteering}
+In the Orienteering Problem (OP) each node has a prize $\rho_i$ and the goal is to \emph{maximize} the total prize of nodes visited, while keeping the total length of the route below a maximum length $T$. This problem is different from the TSP and the VRP because visiting each node is optional. Similar to the VRP, we add a special depot node with index 0 and coordinates $\mathbf{x}_0$. If the model selects the depot, we consider the route to be finished. In order to prevent infeasible solutions, we only allow to visit a node if after visiting that node a return to the depot is still possible within the maximum length constraint. Note that it is always suboptimal to visit the depot if additional nodes can be visited, but we do not enforce this knowledge.
+
+\subsection{Instance generation}
+The depot location as well as $n$ node locations are sampled uniformly at random in the unit square. For the distribution of the prizes, we consider three different variants described by \citet{fischetti1998solving}, but we normalize the prizes $\rho_i$ such that the normalized prizes $\hat{\rho}_i$ are between 0 and 1.
+
+\paragraph{Constant}
+$\rho_i = \hat{\rho}_i = 1$. Every node has the same prize so the goal becomes to visit as many nodes as possible within the length constraint.
+
+\paragraph{Uniform}
+$\rho_i \sim \text{DiscreteUniform}(1, 100), \hat{\rho}_i = \frac{\rho_i}{100}$. Every node has a prize that is (discretized) uniform.
+
+\paragraph{Distance}
+$\rho_i = 1 + \left \lfloor{99 \cdot \frac{d_{0i}}{\max_{j=1}^n d_{0j}}}\right \rfloor, \hat{\rho}_i = \frac{\rho_i}{100}$, where $d_{0i}$ is the distance from the depot to node $i$. Every node has a (discretized) prize that is proportional to the distance to the depot. This is designed to be challenging as the largest prizes are furthest away from the depot \citep{fischetti1998solving}.
+
+The maximum length $T^n$ for instances with $n$ nodes (and a depot) is chosen to be (on average) approximately half of the length of the average TSP tour for uniform TSP instances with $n$ nodes\footnote{The average length of the optimal TSP tour is 3.84, 5.70 and 7.76 for $n=20, 50, 100$.}. This idea is that this way approximately (a little more than) half of the nodes can be visited, which results in the most difficult problem instances \citep{vansteenwegen2011orienteering}. This is because the number of possible node selections ${n \choose k}$ is maximized if $k = \frac{n}{2}$ and additionally determining the actual path is harder with more nodes selected. We set fixed maximum lengths $T^{20} = 2$, $T^{50} = 3$ and $T^{100} = 4$ instead of adjusting the constraint per instance, such that for some instances more or less nodes can be visited. Note that $T^n$ has the same unit as the node coordinates $\mathbf{x}_i$, so we do not normalize them.
+
+\subsection{Attention Model for the OP}
+
+\paragraph{Encoder}
+Similar to the VRP, we use separate parameters for the depot node embedding. Additionally, we provide the node prize $\hat{\rho}_i$ as input feature:
+\begin{equation}
+\mathbf{h}_i^{(0)} = \begin{cases}
+		W_0^{\text{x}} \mathbf{x}_i + \mathbf{b}_0^{\text{x}} & i = 0 \\
+        W^{\text{x}} \left[\mathbf{x}_i, \hat{\rho}_i\right] + \mathbf{b}^{\text{x}} & i = 1, \ldots, n.
+\end{cases} \\
+\end{equation}
+
+\paragraph{Max length constraint}
+In order to satisfy the max length constraint, we keep track of the \emph{remaining} max length $T_t$ at time $t$. Starting at $t = 1$, $T_1 = T$. Then for $t > 0$, $T$ is updated as
+\begin{equation}
+    T_{t+1} = T_{t} - d_{\pi_{t-1},\pi_{t}}.
+\end{equation}
+Here $d_{\pi_{t-1},\pi_{t}}$ is the distance from node $\pi_{t-1}$ to $\pi_{t}$ and we conveniently define $\pi_0$ = 0 as we start at the depot.
+
+\paragraph{Decoder context}
+The context for the decoder for the OP at time $t$ is the current/last location $\pi_{t-1}$ and the remaining max length $T_t$. Similar to VRP, we do not need placeholders if $t=1$ as the route starts at the depot and we do not need to provide information about the first node as the route should end at the depot. We do not need to provide information on the prizes gathered as this is irrelevant for the remaining decisions. The context is defined as:
+\begin{equation}
+	\mathbf{h}_{(c)}^{(N)} = \begin{cases}
+		\left[\bar{\mathbf{h}}^{(N)} , \mathbf{h}^{(N)}_{\pi_{t-1}} , T_t \right] & t > 1 \\
+        \left[\bar{\mathbf{h}}^{(N)} , \mathbf{h}^{(N)}_0 , T_t \right] & t = 1.
+\end{cases} \\
+\end{equation}
+
+\paragraph{Masking}
+In the OP, the depot node can always be visited so is never masked. Regular nodes are masked (i.e. cannot be visited) if either they are already visited or if they cannot be visited within the remaining length constraint:
+\begin{equation}
+    u_{(c)j} = - \infty \Leftrightarrow \exists t' < t: \pi_{t'} = j \text{ or } d_{\pi_{t-1},j} + d_{j0} > T_t
+\end{equation}
+
+\subsection{Details of baselines}
+For Compass\footnote{\url{https://github.com/bcamath-ds/compass}} by \citet{kobeaga2018efficient}, we compile their code and run it with default parameters, only adding \texttt{--op --op-ea4op} to indicate that the Genetic Algorithm for the Orienteering Problem should be used. As Compass uses integer coordinates and prizes, we multiply all floats by $10^7$ and round to integers. We run the Python Genetic Algorithm\footnote{\url{https://github.com/mc-ride/orienteering}} with default parameters.
+
+\paragraph{Tsiligirides}
+\citet{tsiligirides1984heuristic} describes a heuristic procedure for solving the OP. It consists of sampling 3000 tours through a randomized construction procedure and applies local search on top. The randomized construction part of the heuristic is structurally exactly the same as the heuristic learned by our model, but with a manually engineered function to define the node probabilities. We implement the construction part of the heuristic and compare it to our model (either greedy or sampling 1280 solutions), without the local search (as this can also be applied on top of our model). The final heuristic used by \citet{tsiligirides1984heuristic} uses a formula with multiple terms to define the probability that a node should be selected, but by tuning the weights the form with only one simple term works best, showing the difficulty of manually defining a good probability distribution. In our terms, the heuristic defines a score $s_i$ for each node at time $t$ as the prize divided by the distance from the current node $\pi_{t-1}$, raised to the 4th power:
+\begin{equation}
+    s_i = \left(\frac{\hat{\rho}_i}{d_{\pi_{t-1},i}}\right)^4.
+\end{equation}
+Let $S$ be the set with the $\min(4, n - (t - 1))$ unvisited nodes with maximum score $s_i$. Then the node probabilities $p_i$ at time $t$ are defined as
+\begin{equation}
+	\label{dec:probabilities_tsili}
+    p_i = p_{\bm{\theta}}(\pi_t = i|s, \bm{\pi}_{1:t-1}) =  \begin{cases}
+        \frac{s_i}{\sum_{j \in S}{s_j}} & \text{if } i \in S \\
+        0 & \text{otherwise.}
+    \end{cases}
+\end{equation}
+
+\paragraph{OR Tools}
+For the Google OR Tools implementation, we modify the formulation for the CVRP\footnote{\url{https://github.com/google/or-tools/blob/master/examples/python/cvrp.py}}:
+\begin{itemize}
+    \item We replace the Manhattan distance by the Euclidian distance.
+    \item We set the number of vehicles to 1.
+    \item For each individual node $i$, we add a \emph{Disjunction constraint} with $\{i\}$ as the set of nodes, and a penalty equal to the prize $\hat{\rho}_i$. This allows OR tools to skip node $i$ at a cost $\hat{\rho}_i$.
+    \item We replace the capacity constraint by a maximum distance. constraint
+    \item We remove the objective to minimize the length.
+\end{itemize}
+We multiply all float inputs by $10^7$ and round to integers. Note that OR Tools computes penalties for skipped nodes rather than gains for nodes that are visited. The problem is equivalent, but in order to compare the objective value against our method, we need to add the constant sum of all penalties $\sum_i \hat{\rho}_i$ to the OR Tools objective.
+
+\clearpage
+\begin{wraptable}{r}{0.45\textwidth}
+\vskip -0.5in
+\caption{Additional results for the OP}
+\label{tab:results_extended_op}
+\centering
+\scriptsize
+\setlength{\tabcolsep}{0.10em}
+\begin{tabular}{ll|rrrrrr}
+ & Method &  \multicolumn{2}{c}{20} & \multicolumn{2}{c}{50} & \multicolumn{2}{c}{100} \\
+\midrule
+\midrule
+\multirow{8}{*}{\rotatebox[origin=c]{90}{OP (constant)}}
+ &  Gurobi  &   $10.57$ & (4m) & \multicolumn{2}{c}{-} & \multicolumn{2}{c}{-} \\
+ &  Compass  &   $10.56$ & (55s) &  $29.58$ & (3m) &  $59.35$ & (8m) \\
+\cmidrule{2-8}
+ &  Tsili (greedy)  &   $8.82$ & (5s) &  $23.89$ & (4s) &  $47.65$ & (5s) \\
+ &  AM (greedy)  &   $\mathbf{10.27}$ & (0s) &  $\mathbf{28.31}$ & (2s) &  $\mathbf{55.81}$ & (5s) \\
+\cmidrule{2-8}
+ &  GA (Python)  &   $9.72$ & (10m) &  $18.52$ & (1h) &  $25.68$ & (5h) \\
+ &  OR Tools (10s)  &   $8.54$ & (52m) & \multicolumn{2}{c}{-} & \multicolumn{2}{c}{-} \\
+ &  Tsili (sampling)  &   $10.48$ & (28s) &  $28.26$ & (2m) &  $54.27$ & (6m) \\
+ &  AM (sampling)  &   $\mathbf{10.49}$ & (4m) &  $\mathbf{29.36}$ & (17m) &  $\mathbf{58.33}$ & (56m) \\
+\midrule
+\midrule
+\multirow{8}{*}{\rotatebox[origin=c]{90}{OP (uniform)}}
+ &  Gurobi  &   $5.85$ & (7m) & \multicolumn{2}{c}{-} & \multicolumn{2}{c}{-} \\
+ &  Compass  &   $5.84$ & (1m) &  $16.46$ & (5m) &  $33.30$ & (14m) \\
+\cmidrule{2-8}
+ &  Tsili (greedy)  &   $4.85$ & (4s) &  $12.80$ & (4s) &  $25.48$ & (5s) \\
+ &  AM (greedy)  &   $\mathbf{5.60}$ & (0s) &  $\mathbf{15.62}$ & (2s) &  $\mathbf{31.03}$ & (5s) \\
+\cmidrule{2-8}
+ &  GA (Python)  &   $5.53$ & (10m) &  $10.81$ & (1h) &  $14.89$ & (5h) \\
+ &  OR Tools (10s)  &   $4.69$ & (52m) & \multicolumn{2}{c}{-} & \multicolumn{2}{c}{-} \\
+ &  Tsili (sampling)  &   $5.70$ & (26s) &  $15.28$ & (2m) &  $29.54$ & (5m) \\
+ &  AM (sampling)  &   $\mathbf{5.76}$ & (4m) &  $\mathbf{16.25}$ & (16m) &  $\mathbf{32.41}$ & (51m) \\
+\end{tabular}
+\vskip -0.6in
+\end{wraptable}
+
+\subsection{Extended results}
+\label{sec:appendix_op_extended_results}
+Table \ref{tab:results_extended_op} displays the results for the OP with constant and uniform prize distributions. The results are similar to the results for the prize distribution based on the distance to the depot, although by the calculation time for Gurobi it is confirmed that indeed constant and uniform prize distributions are easier.

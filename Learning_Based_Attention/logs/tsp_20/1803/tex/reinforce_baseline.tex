@@ -1,0 +1,60 @@
+\section{REINFORCE with greedy rollout baseline}
+
+\label{sec:reinforce_baseline}
+Section \ref{sec:attention_model} defined our model that given an instance $s$ defines a probability distribution $p_{\bm{\theta}}(\bm{\pi} | s)$, from which we can sample to obtain a solution (tour) $\bm{\pi}|s$. In order to train our model, we define the loss $\Loss(\bm{\theta} | s) = \mathbb{E}_{p_{\bm{\theta}}(\bm{\pi} | s)}\left[L(\bm{\pi})\right]$: the expectation of the cost $L(\bm{\pi})$ (tour length for TSP).
+We optimize $\Loss$ by gradient descent, using the REINFORCE \citep{williams1992simple} gradient estimator with baseline $b(s)$:
+\begin{equation}
+\label{eq:reinforce_baseline}
+	\nabla \Loss(\bm{\theta} | s) = \mathbb{E}_{p_{\bm{\theta}}(\bm{\pi} | s)}\left[\left(L(\bm{\pi}) - b(s)\right) \nabla \log p_{\bm{\theta}}(\bm{\pi} | s)\right].
+\end{equation}
+A good baseline $b(s)$ reduces gradient variance and therefore increases speed of learning. A simple example is an exponential moving average $b(s) = M$ with \emph{decay} $\beta$. Here $M = L(\bm{\pi})$ in the first iteration and gets updated as $M \leftarrow \beta M + (1 - \beta) L(\bm{\pi})$ in subsequent iterations. A popular alternative is the use of a learned value function (critic) $\hat{v}(s, \bm{w})$, where the parameters $\bm{w}$ are learned from the observations $(s, L(\bm{\pi}))$. However, getting such \emph{actor-critic} algorithms to work is non-trivial.
+
+We propose to use a rollout baseline in a way that is similar to self-critical training by~\citet{rennie2017self}, but with periodic updates of the baseline policy. It is defined as follows: $b(s)$ is the cost of a solution from a \emph{deterministic greedy rollout} of the policy defined by the best model so far.
+
+\paragraph{Motivation}
+The goal of a baseline is to estimate the difficulty of the instance $s$, such that it can relate to the cost $L(\bm{\pi})$ to estimate the advantage of the solution $\bm{\pi}$ selected by the model. We make the following key observation:
+\emph{The difficulty of an instance can (on average) be estimated by the performance of an algorithm applied to it.}
+This follows from the assumption that (on average) an algorithm will have a higher cost on instances that are more difficult. Therefore we form a baseline by applying (rolling out) the algorithm defined by our model during training. To eliminate variance we force the result to be deterministic by selecting greedily the action with maximum probability.
+
+\paragraph{Determining the baseline policy}
+As the model changes during training, we stabilize the baseline by freezing the greedy rollout policy $p_{\bm{\theta}^{\text{BL}}}$ for a fixed number of steps (every epoch), similar to freezing of the target Q-network in DQN \citep{mnih2015human}. A stronger algorithm defines a stronger baseline, so we compare (with greedy decoding) the current training policy with the baseline policy at the end of every epoch, and replace the parameters $\bm{\theta}^{\text{BL}}$ of the baseline policy only if the improvement is significant according to a paired t-test ($\alpha = 5 \%$), on 10000 separate (evaluation) instances. If the baseline policy is updated, we sample new evaluation instances to prevent overfitting.
+
+\paragraph{Analysis}
+With the greedy rollout as baseline $b(s)$, the function $L(\bm{\pi}) - b(s)$ is negative if the sampled solution $\bm{\pi}$ is better than the greedy rollout, causing actions to be reinforced, and vice versa. This way the model is trained to improve over its (greedy) self. We see similarities with self-play improvement \citep{silver2017mastering}: sampling replaces tree search for exploration and the model is rewarded if it yields improvement (`wins') compared to the best model. Similar to AlphaGo, the evaluation at the end of each epoch ensures that we are always challenged by the best model.
+
+\paragraph{Algorithm}
+We use Adam \citep{kingma2015adam} as optimizer resulting in Algorithm \ref{alg:reinforce_rollout}.
+
+
+\begin{wrapfigure}{R}{0.50\linewidth}
+\begin{minipage}[t][4.5cm]{0.5\textwidth}
+\vskip -0.8cm
+\begin{algorithm}[H]
+  \centering
+  
+  \scriptsize
+  \caption{REINFORCE with Rollout Baseline} \label{alg:reinforce_rollout}
+  \begin{algorithmic}[1]
+  	  \STATE {\bfseries Input:} number of epochs $E$, steps per epoch $T$, batch size $B$, significance $\alpha$
+      \STATE Init $\bm{\theta},\ \bm{\theta}^{\text{BL}} \gets \bm{\theta}$
+      \FOR{$\text{epoch} = 1, \ldots, E$}
+        \FOR{$\text{step} = 1, \ldots, T$}
+        	\STATE $s_i \gets \text{RandomInstance()} \enspace \forall i \in \{1, \ldots, B\}$
+            \STATE $\bm{\pi}_i \gets \text{SampleRollout}(s_i, p_{\bm{\theta}}) \enspace \forall i \in \{1, \ldots, B\}$
+            \STATE $\bm{\pi}_i^{\text{BL}} \gets \text{GreedyRollout}(s_i, p_{\bm{\theta}^{\text{BL}}}) \enspace \forall i \in \{1, \ldots, B\}$
+            \STATE $\nabla\mathcal{L} \gets \sum_{i=1}^{B} \left(L(\bm{\pi}_i) - L(\bm{\pi}_i^{\text{BL}})\right) \nabla_{\bm{\theta}} \log p_{\bm{\theta}}(\bm{\pi}_i)$
+            
+          	\STATE $\bm{\theta} \gets \text{Adam}(\bm{\theta}, \nabla\mathcal{L})$
+        \ENDFOR
+        
+      \IF{$\text{OneSidedPairedTTest}(p_{\bm{\theta}}, p_{\bm{\theta}^{\text{BL}}}) < \alpha$}
+		\STATE $\bm{\theta}^{\text{BL}} \gets \bm{\theta}$
+      \ENDIF
+     \ENDFOR
+  \end{algorithmic}
+\end{algorithm}
+\end{minipage}
+\end{wrapfigure}
+
+\paragraph{Efficiency}
+Each rollout constitutes an additional forward pass, increasing computation by $50\%$. However, as the baseline policy is fixed for an epoch, we can sample the data and compute baselines per epoch using larger batch sizes, allowed by the reduced memory requirement as the computations can run in pure inference mode. Empirically we find that it adds only $25\%$ (see Appendix \ref{sec:appendix_results_tsp}), taking up $20\%$ of total time. If desired, the baseline rollout can be computed in parallel such that there is no increase in time per iteration, as an easy way to benefit from an additional GPU.
